@@ -32,24 +32,8 @@ struct SubscriptionsListView: View {
 	}
 }
 
-#warning("Fix me")
-#Preview {
-	let container: ModelContainer
-	
-	do {
-		container = try ModelContainer(
-			for: Subscription.self,
-			configurations: ModelConfiguration(isStoredInMemoryOnly: true)
-		)
-
-		return NavigationStack {
-			SubscriptionsListView()
-		}
-		.environment(SubscriptionsViewModel(modelContext: container.mainContext))
-		.modelContainer(container)
-	} catch {
-		print(error.localizedDescription)
-	}
-	
-	return EmptyView()
+#Preview(traits: .modifier(PreviewDataModifier())) {
+    NavigationStack {
+        SubscriptionsListView()
+    }
 }
