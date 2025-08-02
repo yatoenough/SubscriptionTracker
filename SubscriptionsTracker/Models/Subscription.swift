@@ -8,7 +8,7 @@
 import Foundation
 import SwiftData
 
-enum BillingCycle: String, CaseIterable {
+enum BillingCycle: String, CaseIterable, Codable {
 	case daily = "Daily"
 	case weekly = "Weekly"
 	case monthly = "Monthly"
