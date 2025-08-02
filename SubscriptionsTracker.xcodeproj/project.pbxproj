@@ -39,9 +39,9 @@
 		742BEEDB2E3E9F0E00F6D7AA = {
 			isa = PBXGroup;
 			children = (
+				742BEEE62E3E9F0E00F6D7AA /* SubscriptionsTracker */,
 				74271A8E2E3E9F79000D7053 /* LICENSE */,
 				74271A8F2E3E9F79000D7053 /* README.md */,
-				742BEEE62E3E9F0E00F6D7AA /* SubscriptionsTracker */,
 				742BEEE52E3E9F0E00F6D7AA /* Products */,
 			);
 			sourceTree = "<group>";
