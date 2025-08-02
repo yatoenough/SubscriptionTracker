@@ -9,7 +9,6 @@ import SwiftData
 import SwiftUI
 
 struct SubscriptionsListView: View {
-	@Environment(\.modelContext) var modelContext
 	@Environment(SubscriptionsViewModel.self) var subscriptionsViewModel
 
 	var body: some View {
