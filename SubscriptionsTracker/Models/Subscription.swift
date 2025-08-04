@@ -36,4 +36,28 @@ class Subscription {
 		self.BillingCycle = BillingCycle
 		self.currencyCode = currencyCode
 	}
+
+	var nextBillingDate: Date {
+		let calendar = Calendar.current
+		let today = calendar.startOfDay(for: .now)
+
+		if startDate > today {
+			return startDate
+		}
+		
+		var components: DateComponents
+
+		switch BillingCycle {
+		case .daily:
+			return today
+		case .weekly:
+			components = calendar.dateComponents([.weekday], from: startDate)
+		case .monthly:
+			components = calendar.dateComponents([.day], from: startDate)
+		case .yearly:
+			components = calendar.dateComponents([.month, .day], from: startDate)
+		}
+		
+		return calendar.nextDate(after: today, matching: components, matchingPolicy: .nextTime, direction: .forward) ?? today
+	}
 }

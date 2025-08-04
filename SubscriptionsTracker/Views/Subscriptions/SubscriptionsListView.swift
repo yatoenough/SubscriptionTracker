@@ -11,12 +11,16 @@ import SwiftUI
 struct SubscriptionsListView: View {
 	@State private var isAddViewPresented = false
 	
-	@Query(sort: \Subscription.startDate) private var subscriptions: [Subscription]
+	@Query private var subscriptions: [Subscription]
+
+	private var sortedSubscriptions: [Subscription] {
+		subscriptions.sorted { $0.nextBillingDate < $1.nextBillingDate }
+	}
 
 	var body: some View {
-		List(subscriptions) { subscription in
+		List(sortedSubscriptions) { subscription in
 			Text(
-				"\(subscription.name), \(subscription.price.formatted(.currency(code: subscription.currencyCode))), \(subscription.startDate)"
+				"\(subscription.name), \(subscription.price.formatted(.currency(code: subscription.currencyCode))), \(subscription.nextBillingDate)"
 			)
 		}
 		.toolbar {
