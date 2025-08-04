@@ -12,23 +12,11 @@ import SwiftData
 @Observable
 class SubscriptionsViewModel {
 	var modelContext: ModelContext
-	var subscriptions = [Subscription]()
 
 	init(modelContext: ModelContext) {
 		self.modelContext = modelContext
 	}
-
-	func fetchSubscriptions() {
-		do {
-			let descriptor = FetchDescriptor<Subscription>(sortBy: [
-				SortDescriptor(\Subscription.name)
-			])
-			subscriptions = try modelContext.fetch(descriptor)
-		} catch {
-			print("Fetch failed")
-		}
-	}
-
+	
 	func addSubscription(
 		name: String,
 		price: Double,
@@ -45,8 +33,6 @@ class SubscriptionsViewModel {
 		)
 
 		modelContext.insert(newSubscription)
-
-		fetchSubscriptions()
 	}
 
 	func updateSubscription(
@@ -62,13 +48,9 @@ class SubscriptionsViewModel {
 		subscription.startDate = startDate
 		subscription.BillingCycle = billingCycle
 		subscription.currencyCode = currencyCode
-
-		fetchSubscriptions()
 	}
 
 	func deleteSubscription(_ subscription: Subscription) {
 		modelContext.delete(subscription)
-
-		fetchSubscriptions()
 	}
 }

@@ -9,12 +9,12 @@ import SwiftData
 import SwiftUI
 
 struct SubscriptionsListView: View {
-	@Environment(SubscriptionsViewModel.self) private var subscriptionsViewModel
-	
 	@State private var isAddViewPresented = false
+	
+	@Query(sort: \Subscription.startDate) private var subscriptions: [Subscription]
 
 	var body: some View {
-		List(subscriptionsViewModel.subscriptions) { subscription in
+		List(subscriptions) { subscription in
 			Text(
 				"\(subscription.name), \(subscription.price.formatted(.currency(code: subscription.currencyCode))), \(subscription.startDate)"
 			)
