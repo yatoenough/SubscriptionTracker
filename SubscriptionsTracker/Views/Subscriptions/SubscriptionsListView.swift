@@ -9,24 +9,23 @@ import SwiftData
 import SwiftUI
 
 struct SubscriptionsListView: View {
-	@Environment(SubscriptionsViewModel.self) var subscriptionsViewModel
+	@Environment(SubscriptionsViewModel.self) private var subscriptionsViewModel
+	
+	@State private var isAddViewPresented = false
 
 	var body: some View {
 		List(subscriptionsViewModel.subscriptions) { subscription in
 			Text(
-				"\(subscription.name), \(subscription.price)\(subscription.currencyCode), \(subscription.startDate.formatted())"
+				"\(subscription.name), \(subscription.price.formatted(.currency(code: subscription.currencyCode))), \(subscription.startDate)"
 			)
 		}
 		.toolbar {
-			Button("Add example") {
-				subscriptionsViewModel.addSubscription(
-					name: "Demo",
-					price: 2,
-					startDate: Date(),
-					billingCycle: .monthly,
-					currencyCode: "USD"
-				)
+			Button("Add subscription") {
+				isAddViewPresented = true
 			}
+		}
+		.sheet(isPresented: $isAddViewPresented) {
+			AddSubscriptionView()
 		}
 	}
 }
