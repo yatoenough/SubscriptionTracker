@@ -9,7 +9,8 @@ import SwiftData
 import SwiftUI
 
 struct SubscriptionsListView: View {
-	@State private var isAddViewPresented = false
+	@State private var isSubscriptionFormPresented = false
+	@State private var subscriptionToEdit: Subscription? = nil
 	
 	@Query private var subscriptions: [Subscription]
 
@@ -22,14 +23,24 @@ struct SubscriptionsListView: View {
 			Text(
 				"\(subscription.name), \(subscription.price.formatted(.currency(code: subscription.currencyCode))), \(subscription.nextBillingDate)"
 			)
+			.swipeActions {
+				Button {
+					subscriptionToEdit = subscription
+				} label: {
+					Label("Edit", image: "pencil")
+				}
+			}
 		}
 		.toolbar {
 			Button("Add subscription") {
-				isAddViewPresented = true
+				isSubscriptionFormPresented = true
 			}
 		}
-		.sheet(isPresented: $isAddViewPresented) {
+		.sheet(isPresented: $isSubscriptionFormPresented) {
 			SubscriptionFormView()
+		}
+		.sheet(item: $subscriptionToEdit) { subscription in
+			SubscriptionFormView(subscriptionToEdit: subscription)
 		}
 	}
 }
