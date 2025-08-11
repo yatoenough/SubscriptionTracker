@@ -20,20 +20,20 @@ class Subscription {
 	var name: String
 	var price: Double
 	var startDate: Date
-	var BillingCycle: BillingCycle
+	var billingCycle: BillingCycle
 	var currencyCode: String
 
 	init(
 		name: String,
 		price: Double,
 		startDate: Date,
-		BillingCycle: BillingCycle,
+		billingCycle: BillingCycle,
 		currencyCode: String
 	) {
 		self.name = name
 		self.price = price
 		self.startDate = startDate
-		self.BillingCycle = BillingCycle
+		self.billingCycle = billingCycle
 		self.currencyCode = currencyCode
 	}
 
@@ -47,7 +47,7 @@ class Subscription {
 		
 		var components: DateComponents
 
-		switch BillingCycle {
+		switch billingCycle {
 		case .daily:
 			return today
 		case .weekly:
@@ -60,4 +60,15 @@ class Subscription {
 		
 		return calendar.nextDate(after: today, matching: components, matchingPolicy: .nextTime, direction: .forward) ?? today
 	}
+	
+	#if DEBUG
+	@MainActor
+	static let example: Subscription = .init(
+		name: "Demo",
+		price: 10.0,
+		startDate: Date(),
+		billingCycle: .monthly,
+		currencyCode: "USD"
+	)
+	#endif
 }

@@ -11,7 +11,7 @@ import SwiftData
 @MainActor
 @Observable
 class SubscriptionsViewModel {
-	var modelContext: ModelContext
+	private var modelContext: ModelContext
 
 	init(modelContext: ModelContext) {
 		self.modelContext = modelContext
@@ -28,7 +28,7 @@ class SubscriptionsViewModel {
 			name: name,
 			price: price,
 			startDate: startDate,
-			BillingCycle: billingCycle,
+			billingCycle: billingCycle,
 			currencyCode: currencyCode
 		)
 
@@ -46,7 +46,7 @@ class SubscriptionsViewModel {
 		subscription.name = name
 		subscription.price = price
 		subscription.startDate = startDate
-		subscription.BillingCycle = billingCycle
+		subscription.billingCycle = billingCycle
 		subscription.currencyCode = currencyCode
 	}
 

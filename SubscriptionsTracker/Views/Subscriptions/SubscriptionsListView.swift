@@ -29,7 +29,7 @@ struct SubscriptionsListView: View {
 			}
 		}
 		.sheet(isPresented: $isAddViewPresented) {
-			AddSubscriptionView()
+			SubscriptionFormView()
 		}
 	}
 }
