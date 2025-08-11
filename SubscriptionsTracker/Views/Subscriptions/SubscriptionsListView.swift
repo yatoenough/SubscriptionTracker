@@ -13,6 +13,8 @@ struct SubscriptionsListView: View {
 	@State private var subscriptionToEdit: Subscription? = nil
 	
 	@Query private var subscriptions: [Subscription]
+	
+	@Environment(SubscriptionsViewModel.self) private var subscriptionsViewModel
 
 	private var sortedSubscriptions: [Subscription] {
 		subscriptions.sorted { $0.nextBillingDate < $1.nextBillingDate }
@@ -28,6 +30,13 @@ struct SubscriptionsListView: View {
 					subscriptionToEdit = subscription
 				} label: {
 					Label("Edit", image: "pencil")
+				}
+			}
+			.swipeActions(edge: .leading) {
+				Button(role: .destructive) {
+					subscriptionsViewModel.deleteSubscription(subscription)
+				} label: {
+					Label("Delete", image: "trash")
 				}
 			}
 		}
