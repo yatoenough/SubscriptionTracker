@@ -29,14 +29,15 @@ struct SubscriptionsListView: View {
 				Button {
 					subscriptionToEdit = subscription
 				} label: {
-					Label("Edit", image: "pencil")
+					Label("Edit", systemImage: "pencil")
+						.tint(.orange)
 				}
 			}
 			.swipeActions(edge: .leading) {
 				Button(role: .destructive) {
 					subscriptionsViewModel.deleteSubscription(subscription)
 				} label: {
-					Label("Delete", image: "trash")
+					Label("Delete", systemImage: "trash")
 				}
 			}
 		}
