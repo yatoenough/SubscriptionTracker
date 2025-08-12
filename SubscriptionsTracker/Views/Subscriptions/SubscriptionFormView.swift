@@ -81,7 +81,7 @@ struct SubscriptionFormView: View {
 
 						dismiss()
 					}
-					.disabled(!isSubscriptionDataValid)
+					.disabled(isSubscriptionDataValid == false)
 				}
 
 				ToolbarItem(placement: .cancellationAction) {
