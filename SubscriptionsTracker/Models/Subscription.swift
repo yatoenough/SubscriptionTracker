@@ -22,6 +22,7 @@ class Subscription {
 	var startDate: Date
 	var billingCycle: BillingCycle
 	var currencyCode: String
+	var notificationId = UUID()
 
 	init(
 		name: String,

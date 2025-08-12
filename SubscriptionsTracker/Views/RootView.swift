@@ -17,6 +17,8 @@ struct RootView: View {
 			fatalError(error.localizedDescription)
 		}
 	}()
+	
+	let notificationsService = NotificationsService()
 
 	var body: some View {
 		NavigationStack {
@@ -24,9 +26,17 @@ struct RootView: View {
 				.modelContainer(modelContainer)
 				.environment(
 					SubscriptionsViewModel(
-						modelContext: modelContainer.mainContext
+						modelContext: modelContainer.mainContext,
+						notificationsService: notificationsService
 					)
 				)
+				.task {
+					let granted = await notificationsService.requestAuthorization(options: [.alert, .sound, .badge])
+					
+					if !granted {
+						print("Notifications permission not granted")
+					}
+				}
 		}
 	}
 }

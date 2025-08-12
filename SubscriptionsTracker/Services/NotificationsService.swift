@@ -5,9 +5,9 @@
 //  Created by Nikita Shyshkin on 12/08/2025.
 //
 
-import UserNotifications
+@preconcurrency import UserNotifications
 
-struct NotificationsService {
+final class NotificationsService: Sendable {
 	private let center = UNUserNotificationCenter.current()
 
 	func requestAuthorization(options: UNAuthorizationOptions) async -> Bool {
@@ -37,5 +37,9 @@ struct NotificationsService {
 		)
 
 		center.add(request)
+	}
+
+	func deleteNotification(withId id: UUID) {
+		center.removePendingNotificationRequests(withIdentifiers: [id.uuidString])
 	}
 }
