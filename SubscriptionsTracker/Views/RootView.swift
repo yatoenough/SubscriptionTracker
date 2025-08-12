@@ -9,7 +9,7 @@ import SwiftData
 import SwiftUI
 
 struct RootView: View {
-	let modelContainer: ModelContainer = {
+	private let modelContainer: ModelContainer = {
 		do {
 			let schema = Schema([Subscription.self])
 			return try ModelContainer(for: schema)
@@ -18,7 +18,9 @@ struct RootView: View {
 		}
 	}()
 	
-	let notificationsService = NotificationsService()
+	private let notificationsService = NotificationsService()
+	
+	@State private var isNotificationsPermissionDenied = false
 
 	var body: some View {
 		NavigationStack {
@@ -34,8 +36,13 @@ struct RootView: View {
 					let granted = await notificationsService.requestAuthorization(options: [.alert, .sound, .badge])
 					
 					if !granted {
-						print("Notifications permission not granted")
+						isNotificationsPermissionDenied = true
 					}
+				}
+				.alert("Notifications permission denied", isPresented: $isNotificationsPermissionDenied) {
+					Button("OK") {}
+				} message: {
+					Text("Notifications permission was not granted. You will not be notified about subscription due dates. You can enable it in Settings > Notifications > SubTrack")
 				}
 		}
 	}

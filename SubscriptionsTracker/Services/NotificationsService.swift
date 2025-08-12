@@ -15,10 +15,12 @@ final class NotificationsService: Sendable {
 			center.requestAuthorization(options: options) { success, error in
 				if success {
 					continuation.resume(returning: success)
+					return
 				} else if let error {
 					print("Error requesting authorization: \(error)")
-					continuation.resume(returning: false)
 				}
+				
+				continuation.resume(returning: false)
 			}
 		}
 	}
