@@ -20,7 +20,7 @@ struct PreviewDataModifier: PreviewModifier {
                 for: Subscription.self,
                 configurations: ModelConfiguration(isStoredInMemoryOnly: true)
             )
-            let viewModel = SubscriptionsViewModel(modelContext: container.mainContext)
+            let viewModel = SubscriptionsViewModel(modelContext: container.mainContext, notificationsService: NotificationsService())
             return Context(modelContainer: container, subscriptionsViewModel: viewModel)
         } catch {
             fatalError("Failed to create ModelContainer for previews: \(error.localizedDescription)")
