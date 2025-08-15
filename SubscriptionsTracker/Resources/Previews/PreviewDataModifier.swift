@@ -20,6 +20,7 @@ struct PreviewDataModifier: PreviewModifier {
                 for: Subscription.self,
                 configurations: ModelConfiguration(isStoredInMemoryOnly: true)
             )
+			container.mainContext.insert(Subscription.example)
             let viewModel = SubscriptionsViewModel(modelContext: container.mainContext, notificationsService: NotificationsService())
             return Context(modelContainer: container, subscriptionsViewModel: viewModel)
         } catch {

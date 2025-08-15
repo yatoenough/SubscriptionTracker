@@ -11,9 +11,9 @@ import SwiftUI
 struct SubscriptionsListView: View {
 	@State private var isSubscriptionFormPresented = false
 	@State private var subscriptionToEdit: Subscription? = nil
-	
+
 	@Query private var subscriptions: [Subscription]
-	
+
 	@Environment(SubscriptionsViewModel.self) private var subscriptionsViewModel
 
 	private var sortedSubscriptions: [Subscription] {
@@ -21,29 +21,39 @@ struct SubscriptionsListView: View {
 	}
 
 	var body: some View {
-		List(sortedSubscriptions) { subscription in
-			Text(
-				"\(subscription.name), \(subscription.price.formatted(.currency(code: subscription.currencyCode))), \(subscription.nextBillingDate)"
-			)
-			.swipeActions {
-				Button {
-					subscriptionToEdit = subscription
-				} label: {
-					Label("Edit", systemImage: "pencil")
-						.tint(.orange)
-				}
-			}
-			.swipeActions(edge: .leading) {
-				Button(role: .destructive) {
-					subscriptionsViewModel.deleteSubscription(subscription)
-				} label: {
-					Label("Delete", systemImage: "trash")
-				}
+		ScrollView {
+			ForEach(sortedSubscriptions) { subscription in
+				SubscriptionView(subscription: subscription)
+					.overlay(alignment: .topTrailing) {
+						Menu {
+							Button {
+								subscriptionToEdit = subscription
+							} label: {
+								Label("Edit", systemImage: "pencil")
+									.tint(.orange)
+							}
+							
+							Button(role: .destructive) {
+								subscriptionsViewModel.deleteSubscription(
+									subscription
+								)
+							} label: {
+								Label("Delete", systemImage: "trash")
+							}
+						} label: {
+							Image(systemName: "ellipsis")
+								.padding(3)
+						}
+						.buttonBorderShape(.circle)
+						.buttonStyle(.bordered)
+					}
 			}
 		}
 		.toolbar {
-			Button("Add subscription") {
+			Button {
 				isSubscriptionFormPresented = true
+			} label: {
+				Image(systemName: "plus")
 			}
 		}
 		.sheet(isPresented: $isSubscriptionFormPresented) {
@@ -56,7 +66,7 @@ struct SubscriptionsListView: View {
 }
 
 #Preview(traits: .modifier(PreviewDataModifier())) {
-    NavigationStack {
-        SubscriptionsListView()
-    }
+	NavigationStack {
+		SubscriptionsListView()
+	}
 }
