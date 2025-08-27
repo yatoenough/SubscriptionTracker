@@ -30,21 +30,21 @@ struct SubscriptionsListView: View {
 						Button(role: .destructive) {
 							subscriptionsViewModel.deleteSubscription(subscription)
 						} label: {
-							Label("Delete", systemImage: "trash")
+							Label("delete", systemImage: "trash")
 						}
 						
 						Button {
 							subscriptionToEdit = subscription
 						} label: {
-							Label("Edit", systemImage: "pencil")
+							Label("edit", systemImage: "pencil")
 						}
 						.tint(.orange)
 					}
 			}
 		}
 		.listStyle(.plain)
-		.navigationTitle("Subscriptions")
-		.toolbar { 
+		.navigationTitle(Text("subscriptions"))
+		.toolbar {
 			Button {
 				isSubscriptionFormPresented = true
 			} label: {
@@ -58,10 +58,10 @@ struct SubscriptionsListView: View {
 		.sheet(item: $subscriptionToEdit) { subscription in
 			SubscriptionFormView(subscriptionToEdit: subscription)
 		}
-		.alert("Notifications permission denied", isPresented: .constant(subscriptionsViewModel.isNotificationsPermissionDenied)) {
+		.alert(Text("notifications_permission_denied_title"), isPresented: .constant(subscriptionsViewModel.isNotificationsPermissionDenied)) {
 			Button("OK") {}
 		} message: {
-			Text("Notifications permission was not granted. You will not be notified about subscription due dates. You can enable it in Settings > Notifications > SubTrack")
+			Text("notifications_permission_denied_message")
 		}
 	}
 }

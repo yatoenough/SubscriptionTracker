@@ -93,10 +93,13 @@ class SubscriptionsViewModel {
 		
 		let trigger = UNCalendarNotificationTrigger(dateMatching: triggerDateComponents, repeats: true)
 		
+		let title = String(format: NSLocalizedString("subscription_notification_title", comment: ""), subscription.name)
+		let subtitle = String(format: NSLocalizedString("subscription_notification_subtitle", comment: ""), subscription.name)
+		
 		let notificationData = NotificationData(
 			id: subscription.notificationId,
-			title: "\(subscription.name) subscription",
-			subtitle: "\(subscription.name) subscription is due tomorrow",
+			title: title,
+			subtitle: subtitle,
 			sound: .default,
 			trigger: trigger
 		)

@@ -7,12 +7,17 @@
 
 import Foundation
 import SwiftData
+import SwiftUI
 
 enum BillingCycle: String, CaseIterable, Codable {
-	case daily = "Daily"
-	case weekly = "Weekly"
-	case monthly = "Monthly"
-	case yearly = "Yearly"
+	case daily = "daily"
+	case weekly = "weekly"
+	case monthly = "monthly"
+	case yearly = "yearly"
+	
+	var localized: LocalizedStringKey {
+		LocalizedStringKey(self.rawValue)
+	}
 }
 
 @Model
@@ -62,6 +67,45 @@ class Subscription {
 		return calendar.nextDate(after: today, matching: components, matchingPolicy: .nextTime, direction: .forward) ?? today
 	}
 	
+	var lastBillingDate: Date {
+		let calendar = Calendar.current
+		let today = calendar.startOfDay(for: .now)
+
+		if startDate > today {
+			return startDate
+		}
+
+		var components: DateComponents
+		switch billingCycle {
+		case .daily:
+			return today
+		case .weekly:
+			components = calendar.dateComponents([.weekday], from: startDate)
+		case .monthly:
+			components = calendar.dateComponents([.day], from: startDate)
+		case .yearly:
+			components = calendar.dateComponents([.month, .day], from: startDate)
+		}
+		
+		return calendar.nextDate(after: today, matching: components, matchingPolicy: .nextTime, direction: .backward) ?? today
+	}
+
+	var progress: Double {
+		let now = Date()
+		guard startDate <= now else { return 0 }
+
+		let calendar = Calendar.current
+		let totalDaysInCycle: Double
+		
+		let nextDate = nextBillingDate
+		let lastDate = lastBillingDate
+
+		totalDaysInCycle = Double(calendar.dateComponents([.day], from: lastDate, to: nextDate).day ?? 0)
+		let daysPassed = Double(calendar.dateComponents([.day], from: lastDate, to: now).day ?? 0)
+
+		return min(1, max(0, daysPassed / totalDaysInCycle))
+	}
+
 	#if DEBUG
 	@MainActor
 	static let example: Subscription = .init(

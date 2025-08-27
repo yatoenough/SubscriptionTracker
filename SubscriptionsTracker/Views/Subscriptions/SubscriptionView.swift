@@ -9,7 +9,7 @@ import SwiftUI
 
 struct SubscriptionView: View {
 	let subscription: Subscription
-	
+
 	var formatter: DateFormatter {
 		let formatter = DateFormatter()
 		formatter.dateFormat = "dd/MM/yyyy"
@@ -28,36 +28,37 @@ struct SubscriptionView: View {
 				Spacer()
 
 				VStack(alignment: .trailing) {
-					Text(subscription.price.formatted(.currency(code: subscription.currencyCode)))
-						.font(.headline)
-						.bold()
-					
-					Text(subscription.billingCycle.rawValue.capitalized)
+					Text(
+						subscription.price.formatted(
+							.currency(code: subscription.currencyCode)
+						)
+					)
+					.font(.headline)
+					.bold()
+
+					Text(subscription.billingCycle.localized)
 						.font(.caption)
 						.foregroundStyle(.secondary)
 				}
 			}
-			
-			ProgressView(
-				value: min(1, Double(Calendar.current.dateComponents([.day], from: subscription.startDate, to: .now).day ?? 0) / 30),
-				total: 1
-			)
-			.progressViewStyle(.linear)
-			.tint(.accentColor)
-			
+
+			ProgressView(value: subscription.progress, total: 1)
+				.progressViewStyle(.linear)
+				.tint(.accentColor)
+
 			HStack {
 				VStack(alignment: .leading) {
-					Text("Start Date")
+					Text("start_date")
 						.font(.caption)
 						.foregroundStyle(.secondary)
 					Text(formatter.string(from: subscription.startDate))
 						.font(.subheadline)
 				}
-				
+
 				Spacer()
-				
+
 				VStack(alignment: .trailing) {
-					Text("Next Payment")
+					Text("next_payment")
 						.font(.caption)
 						.foregroundStyle(.secondary)
 					Text(formatter.string(from: subscription.nextBillingDate))

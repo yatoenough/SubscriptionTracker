@@ -31,8 +31,8 @@ struct SubscriptionFormView: View {
 		}
 	}
 
-	private var navigationTitle: String {
-		subscriptionToEdit == nil ? "Add Subscription" : "Edit Subscription"
+	private var navigationTitle: LocalizedStringKey {
+		subscriptionToEdit == nil ? "add_subscription" : "edit_subscription"
 	}
 
 	private var isSubscriptionDataValid: Bool { validateSubscription() }
@@ -40,27 +40,27 @@ struct SubscriptionFormView: View {
 	var body: some View {
 		NavigationStack {
 			Form {
-				Section("Subscription Details") { 
-					TextField("Name", text: $name)
+				Section("subscription_details") {
+					TextField("name", text: $name)
 						.autocorrectionDisabled()
 
-					TextField("Price", value: $price, format: .number)
+					TextField("price", value: $price, format: .number)
 						.keyboardType(.decimalPad)
 
-					TextField("Currency", text: $currencyCode)
+					TextField("currency", text: $currencyCode)
 						.autocorrectionDisabled()
 				}
 
-				Section("Billing") {
+				Section("billing") {
 					DatePicker(
-						"Start Date",
+						"start_date",
 						selection: $startDate,
 						displayedComponents: .date
 					)
 
-					Picker("Billing Cycle", selection: $billingCycle) {
+					Picker("billing_cycle", selection: $billingCycle) {
 						ForEach(BillingCycle.allCases, id: \.self) { cycle in
-							Text(cycle.rawValue)
+							Text(cycle.localized)
 								.tag(cycle)
 						}
 					}
@@ -70,7 +70,7 @@ struct SubscriptionFormView: View {
 			.navigationBarTitleDisplayMode(.inline)
 			.toolbar {
 				ToolbarItem(placement: .confirmationAction) {
-					Button("Save") {
+					Button("save") {
 						saveSubscription()
 
 						dismiss()
@@ -79,7 +79,7 @@ struct SubscriptionFormView: View {
 				}
 
 				ToolbarItem(placement: .cancellationAction) {
-					Button("Cancel", role: .cancel) {
+					Button("cancel", role: .cancel) {
 						dismiss()
 					}
 				}
@@ -118,10 +118,10 @@ struct SubscriptionFormView: View {
 	}
 }
 
-#Preview("Add subscription", traits: .modifier(PreviewDataModifier())) {
+#Preview("Add Subscription", traits: .modifier(PreviewDataModifier())) {
 	SubscriptionFormView()
 }
 
-#Preview("Edit subscription", traits: .modifier(PreviewDataModifier())) {
+#Preview("Edit Subscription", traits: .modifier(PreviewDataModifier())) {
 	SubscriptionFormView(subscriptionToEdit: Subscription.example)
 }
