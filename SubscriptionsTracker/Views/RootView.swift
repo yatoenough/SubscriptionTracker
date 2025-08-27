@@ -9,21 +9,20 @@ import SwiftData
 import SwiftUI
 
 struct RootView: View {
-	private let notificationsService = NotificationsService()
-
-	@State private var isNotificationsPermissionDenied = false
+	private let notificationsService: NotificationsService
+	private let modelContainer: ModelContainer
+	private let subscriptionsViewModel: SubscriptionsViewModel
 	
-	private let modelContainer: ModelContainer = {
+	init() {
+		notificationsService = .init()
+		
 		do {
-			let schema = Schema([Subscription.self])
-			return try ModelContainer(for: schema)
+			modelContainer = try ModelContainer(for: Schema([Subscription.self]))
 		} catch {
 			fatalError(error.localizedDescription)
 		}
-	}()
-	
-	private var subscriptionsViewModel: SubscriptionsViewModel {
-		SubscriptionsViewModel(
+		
+		subscriptionsViewModel = SubscriptionsViewModel(
 			modelContext: modelContainer.mainContext,
 			notificationsService: notificationsService
 		)
@@ -36,20 +35,7 @@ struct RootView: View {
 		.preferredColorScheme(.dark)
 		.modelContainer(modelContainer)
 		.environment(subscriptionsViewModel)
-		.task { await handleNotificationsPermissionRequest()}
-		.alert("Notifications permission denied", isPresented: $isNotificationsPermissionDenied) {
-			Button("OK") {}
-		} message: {
-			Text("Notifications permission was not granted. You will not be notified about subscription due dates. You can enable it in Settings > Notifications > SubTrack")
-		}
-	}
-	
-	func handleNotificationsPermissionRequest() async {
-		let granted = await notificationsService.requestAuthorization(options: [.alert, .sound, .badge])
-		
-		if !granted {
-			isNotificationsPermissionDenied = true
-		}
+		.task { await subscriptionsViewModel.requestNotificationsPermission() }
 	}
 }
 

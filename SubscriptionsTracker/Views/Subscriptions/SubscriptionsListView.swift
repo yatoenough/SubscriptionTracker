@@ -21,39 +21,35 @@ struct SubscriptionsListView: View {
 	}
 
 	var body: some View {
-		ScrollView {
+		List {
 			ForEach(sortedSubscriptions) { subscription in
 				SubscriptionView(subscription: subscription)
-					.overlay(alignment: .topTrailing) {
-						Menu {
-							Button {
-								subscriptionToEdit = subscription
-							} label: {
-								Label("Edit", systemImage: "pencil")
-									.tint(.orange)
-							}
-							
-							Button(role: .destructive) {
-								subscriptionsViewModel.deleteSubscription(
-									subscription
-								)
-							} label: {
-								Label("Delete", systemImage: "trash")
-							}
+					.listRowSeparator(.hidden)
+					.listRowInsets(EdgeInsets(top: 8, leading: 16, bottom: 8, trailing: 16))
+					.swipeActions(edge: .trailing, allowsFullSwipe: true) {
+						Button(role: .destructive) {
+							subscriptionsViewModel.deleteSubscription(subscription)
 						} label: {
-							Image(systemName: "ellipsis")
-								.padding(3)
+							Label("Delete", systemImage: "trash")
 						}
-						.buttonBorderShape(.circle)
-						.buttonStyle(.bordered)
+						
+						Button {
+							subscriptionToEdit = subscription
+						} label: {
+							Label("Edit", systemImage: "pencil")
+						}
+						.tint(.orange)
 					}
 			}
 		}
-		.toolbar {
+		.listStyle(.plain)
+		.navigationTitle("Subscriptions")
+		.toolbar { 
 			Button {
 				isSubscriptionFormPresented = true
 			} label: {
-				Image(systemName: "plus")
+				Image(systemName: "plus.circle.fill")
+					.font(.title2)
 			}
 		}
 		.sheet(isPresented: $isSubscriptionFormPresented) {
@@ -61,6 +57,11 @@ struct SubscriptionsListView: View {
 		}
 		.sheet(item: $subscriptionToEdit) { subscription in
 			SubscriptionFormView(subscriptionToEdit: subscription)
+		}
+		.alert("Notifications permission denied", isPresented: .constant(subscriptionsViewModel.isNotificationsPermissionDenied)) {
+			Button("OK") {}
+		} message: {
+			Text("Notifications permission was not granted. You will not be notified about subscription due dates. You can enable it in Settings > Notifications > SubTrack")
 		}
 	}
 }

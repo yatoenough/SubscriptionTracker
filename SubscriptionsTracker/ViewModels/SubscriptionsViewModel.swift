@@ -14,6 +14,7 @@ import UserNotifications
 class SubscriptionsViewModel {
 	private var modelContext: ModelContext
 	private let notificationsService: NotificationsService
+	var isNotificationsPermissionDenied = false
 
 	init(modelContext: ModelContext, notificationsService: NotificationsService) {
 		self.modelContext = modelContext
@@ -60,6 +61,14 @@ class SubscriptionsViewModel {
 	func deleteSubscription(_ subscription: Subscription) {
 		notificationsService.deleteNotification(withId: subscription.notificationId)
 		modelContext.delete(subscription)
+	}
+	
+	func requestNotificationsPermission() async {
+		let granted = await notificationsService.requestAuthorization(options: [.alert, .sound, .badge])
+		
+		if !granted {
+			isNotificationsPermissionDenied = true
+		}
 	}
 	
 	private func scheduleNotification(for subscription: Subscription) {

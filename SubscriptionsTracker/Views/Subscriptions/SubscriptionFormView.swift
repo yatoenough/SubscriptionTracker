@@ -40,22 +40,15 @@ struct SubscriptionFormView: View {
 	var body: some View {
 		NavigationStack {
 			Form {
-				Section("Subscription Details") {
+				Section("Subscription Details") { 
 					TextField("Name", text: $name)
+						.autocorrectionDisabled()
 
-					TextField(
-						"Price",
-						value: $price,
-						format: .currency(code: currencyCode)
-					)
-					.keyboardType(.decimalPad)
+					TextField("Price", value: $price, format: .number)
+						.keyboardType(.decimalPad)
 
-					Picker("Currency", selection: $currencyCode) {
-						ForEach(Locale.commonISOCurrencyCodes, id: \.self) {
-							code in
-							Text(code)
-						}
-					}
+					TextField("Currency", text: $currencyCode)
+						.autocorrectionDisabled()
 				}
 
 				Section("Billing") {
@@ -74,6 +67,7 @@ struct SubscriptionFormView: View {
 				}
 			}
 			.navigationTitle(navigationTitle)
+			.navigationBarTitleDisplayMode(.inline)
 			.toolbar {
 				ToolbarItem(placement: .confirmationAction) {
 					Button("Save") {
@@ -108,7 +102,7 @@ struct SubscriptionFormView: View {
 				price: price,
 				startDate: startDate,
 				billingCycle: billingCycle,
-				currencyCode: currencyCode
+				currencyCode: currencyCode.uppercased()
 			)
 			
 			return
@@ -119,7 +113,7 @@ struct SubscriptionFormView: View {
 			price: price,
 			startDate: startDate,
 			billingCycle: billingCycle,
-			currencyCode: currencyCode
+			currencyCode: currencyCode.uppercased()
 		)
 	}
 }

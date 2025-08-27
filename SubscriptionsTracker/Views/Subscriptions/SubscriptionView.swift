@@ -18,55 +18,58 @@ struct SubscriptionView: View {
 
 	var body: some View {
 		VStack {
-			HStack(alignment: .midline) {
-				VStack {
+			HStack(alignment: .center) {
+				VStack(alignment: .leading) {
 					Text(subscription.name)
-						.font(.title)
+						.font(.headline)
 						.bold()
-						.alignmentGuide(.midline) { d in
-							d[VerticalAlignment.center]
-						}
 				}
 
 				Spacer()
 
-				VStack {
-					Text("\(subscription.price.formatted(.currency(code: subscription.currencyCode)))")
-					.bold()
-					.alignmentGuide(.midline) { d in
-						d[VerticalAlignment.center]
-					}
+				VStack(alignment: .trailing) {
+					Text(subscription.price.formatted(.currency(code: subscription.currencyCode)))
+						.font(.headline)
+						.bold()
 					
 					Text(subscription.billingCycle.rawValue.capitalized)
 						.font(.caption)
-						
+						.foregroundStyle(.secondary)
 				}
 			}
-			.padding()
+			
+			ProgressView(
+				value: min(1, Double(Calendar.current.dateComponents([.day], from: subscription.startDate, to: .now).day ?? 0) / 30),
+				total: 1
+			)
+			.progressViewStyle(.linear)
+			.tint(.accentColor)
 			
 			HStack {
-				VStack {
-					Text("Start date")
+				VStack(alignment: .leading) {
+					Text("Start Date")
+						.font(.caption)
+						.foregroundStyle(.secondary)
 					Text(formatter.string(from: subscription.startDate))
-						.font(.callout)
+						.font(.subheadline)
 				}
 				
 				Spacer()
 				
-				VStack {
-					Text("Next payment")
+				VStack(alignment: .trailing) {
+					Text("Next Payment")
+						.font(.caption)
+						.foregroundStyle(.secondary)
 					Text(formatter.string(from: subscription.nextBillingDate))
-						.font(.callout)
+						.font(.subheadline)
 				}
 			}
-			.font(.footnote)
-			.padding()
 		}
+		.padding()
 		.background(
-			RoundedRectangle(cornerRadius: 10)
+			RoundedRectangle(cornerRadius: 15)
 				.foregroundStyle(.regularMaterial)
 		)
-		.padding()
 	}
 }
 
