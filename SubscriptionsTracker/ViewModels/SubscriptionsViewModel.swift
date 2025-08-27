@@ -14,6 +14,7 @@ import UserNotifications
 class SubscriptionsViewModel {
 	private var modelContext: ModelContext
 	private let notificationsService: NotificationsService
+	var isNotificationsPermissionDenied = false
 
 	init(modelContext: ModelContext, notificationsService: NotificationsService) {
 		self.modelContext = modelContext
@@ -62,6 +63,14 @@ class SubscriptionsViewModel {
 		modelContext.delete(subscription)
 	}
 	
+	func requestNotificationsPermission() async {
+		let granted = await notificationsService.requestAuthorization(options: [.alert, .sound, .badge])
+		
+		if !granted {
+			isNotificationsPermissionDenied = true
+		}
+	}
+	
 	private func scheduleNotification(for subscription: Subscription) {
 		let notificationDate = Calendar.current.date(byAdding: .day, value: -1, to: subscription.nextBillingDate)!
 		var components: Set<Calendar.Component> = []
@@ -84,10 +93,13 @@ class SubscriptionsViewModel {
 		
 		let trigger = UNCalendarNotificationTrigger(dateMatching: triggerDateComponents, repeats: true)
 		
+		let title = String(format: NSLocalizedString("subscription_notification_title", comment: ""), subscription.name)
+		let subtitle = String(format: NSLocalizedString("subscription_notification_subtitle", comment: ""), subscription.name)
+		
 		let notificationData = NotificationData(
 			id: subscription.notificationId,
-			title: "\(subscription.name) subscription",
-			subtitle: "\(subscription.name) subscription is due tomorrow",
+			title: title,
+			subtitle: subtitle,
 			sound: .default,
 			trigger: trigger
 		)

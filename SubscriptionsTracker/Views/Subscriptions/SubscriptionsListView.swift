@@ -11,9 +11,9 @@ import SwiftUI
 struct SubscriptionsListView: View {
 	@State private var isSubscriptionFormPresented = false
 	@State private var subscriptionToEdit: Subscription? = nil
-	
+
 	@Query private var subscriptions: [Subscription]
-	
+
 	@Environment(SubscriptionsViewModel.self) private var subscriptionsViewModel
 
 	private var sortedSubscriptions: [Subscription] {
@@ -21,29 +21,35 @@ struct SubscriptionsListView: View {
 	}
 
 	var body: some View {
-		List(sortedSubscriptions) { subscription in
-			Text(
-				"\(subscription.name), \(subscription.price.formatted(.currency(code: subscription.currencyCode))), \(subscription.nextBillingDate)"
-			)
-			.swipeActions {
-				Button {
-					subscriptionToEdit = subscription
-				} label: {
-					Label("Edit", systemImage: "pencil")
+		List {
+			ForEach(sortedSubscriptions) { subscription in
+				SubscriptionView(subscription: subscription)
+					.listRowSeparator(.hidden)
+					.listRowInsets(EdgeInsets(top: 8, leading: 16, bottom: 8, trailing: 16))
+					.swipeActions(edge: .trailing, allowsFullSwipe: true) {
+						Button(role: .destructive) {
+							subscriptionsViewModel.deleteSubscription(subscription)
+						} label: {
+							Label("delete", systemImage: "trash")
+						}
+						
+						Button {
+							subscriptionToEdit = subscription
+						} label: {
+							Label("edit", systemImage: "pencil")
+						}
 						.tint(.orange)
-				}
-			}
-			.swipeActions(edge: .leading) {
-				Button(role: .destructive) {
-					subscriptionsViewModel.deleteSubscription(subscription)
-				} label: {
-					Label("Delete", systemImage: "trash")
-				}
+					}
 			}
 		}
+		.listStyle(.plain)
+		.navigationTitle(Text("subscriptions"))
 		.toolbar {
-			Button("Add subscription") {
+			Button {
 				isSubscriptionFormPresented = true
+			} label: {
+				Image(systemName: "plus.circle.fill")
+					.font(.title2)
 			}
 		}
 		.sheet(isPresented: $isSubscriptionFormPresented) {
@@ -52,11 +58,16 @@ struct SubscriptionsListView: View {
 		.sheet(item: $subscriptionToEdit) { subscription in
 			SubscriptionFormView(subscriptionToEdit: subscription)
 		}
+		.alert(Text("notifications_permission_denied_title"), isPresented: .constant(subscriptionsViewModel.isNotificationsPermissionDenied)) {
+			Button("OK") {}
+		} message: {
+			Text("notifications_permission_denied_message")
+		}
 	}
 }
 
 #Preview(traits: .modifier(PreviewDataModifier())) {
-    NavigationStack {
-        SubscriptionsListView()
-    }
+	NavigationStack {
+		SubscriptionsListView()
+	}
 }
