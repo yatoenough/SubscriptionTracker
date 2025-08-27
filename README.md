@@ -2,8 +2,9 @@
 
 Subscription Tracker is a simple iOS app that helps you keep track of your subscriptions.
 
-![Main screen](https://github.com/yatoenough/SubscriptionTracker/img/main/main-screen.png?raw=true)
-
+<div align="center">
+  <img src="./main-screen.png" height=500/>
+</div>
 ## Features
 
 - Add, edit, and delete subscriptions.
